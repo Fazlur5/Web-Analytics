@@ -1,0 +1,16 @@
+from github import Github
+# Authenticate
+g = Github("YOUR_PERSONAL_ACCESS_TOKEN") #generate personal access token in GitHub
+
+# Get a specific repository
+repo = g.get_repo("Fazlur5/UI-integration-with-dialogflow-cx-agent") #mining this github id
+# Print repository information
+print(f"Repository name: {repo.name}")
+print(f"Description: {repo.description}")
+print(f"Stars: {repo.stargazers_count}")
+
+# Print contributors
+for contributor in repo.get_contributors():
+  print(f"{contributor.login} ({contributor.contributions} contributions)")
+
+# Replace 'YOUR_ACCESS_TOKEN' with your GitHub personal access token
