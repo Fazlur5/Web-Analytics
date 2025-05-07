@@ -1,0 +1,31 @@
+from github import Github
+import time
+
+# Authenticate with a personal access token
+g = Github("YOUR_PERSONAL_ACCESS_TOKEN")
+
+# Get a specific repository
+repo = g.get_repo("aws-samples/sample-client-for-amazon-bedrock")
+
+# Print repository information
+print(f"Repository name: {repo.name}")
+print(f"Description: {repo.description}")
+print(f"Stars: {repo.stargazers_count}")
+
+# Function to check rate limit and wait if necessary
+def check_rate_limit():
+    rate_limit = g.get_rate_limit()  # Get rate limit info
+    remaining = rate_limit.core.remaining  # Check remaining requests in the core
+    reset_time = rate_limit.core.reset  # Check when the rate limit resets
+
+    if remaining == 0:
+        reset_timestamp = reset_time.timestamp() - time.time()  # Calculate time to reset
+        print(f"Rate limit exceeded. Sleeping for {int(reset_timestamp)} seconds...")
+        time.sleep(reset_timestamp + 10)  # Wait for rate limit reset
+    else:
+        print(f"Remaining requests: {remaining}")
+
+# Print contributors (pagination handled automatically)
+for contributor in repo.get_contributors():
+    check_rate_limit()  # Check rate before each request if needed
+    print(f"{contributor.login} ({contributor.contributions} contributions)")
